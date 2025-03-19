@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vinsta - Telegram kanali</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #0a0f2c; /* Темно-синий фон */
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Контейнер с анимацией */
+        .container {
+            position: relative;
+            z-index: 1;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Заголовок с бликом */
+        h1 {
+            font-size: 36px;
+            margin-bottom: 15px;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        h1::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shine 4s infinite linear;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        p {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #c0c8ff;
+        }
+
+        /* Кнопка */
+        .button {
+            display: inline-block;
+            padding: 14px 28px;
+            font-size: 20px;
+            color: white;
+            background: #1a237e;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: 0.3s;
+            box-shadow: 0 0 15px rgba(26, 35, 126, 0.8);
+            position: relative;
+        }
+
+        .button::before {
+            content: "";
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border-radius: 12px;
+            background: linear-gradient(45deg, #1a237e, #536dfe, #1a237e);
+            z-index: -1;
+            filter: blur(8px);
+            animation: pulse 3s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        .button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(26, 35, 126, 1);
+        }
+
+        /* Частицы */
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Частицы -->
+    <canvas id="particles"></canvas>
+
+    <div class="container">
+        <h1>Vinsta - Telegram-kanaliga xush kelibsiz!</h1>
+        <p>Eng qiziqarli strategiyalar va foydali ma’lumotlar faqat bizning kanalimizda!</p>
+        <a href="https://t.me/Vinsta_uz" class="button" target="_blank">Kanalga o'tish</a>
+    </div>
+
+    <script>
+        // Плавное появление контента
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelector(".container").style.opacity = "1";
+            document.querySelector(".container").style.transform = "translateY(0)";
+        });
+
+        // Частицы
+        const canvas = document.getElementById("particles");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particlesArray = [];
+
+        class Particle {
+		    constructor(x, y, size, speedX, speedY) {
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.speedX = speedX;
+                this.speedY = speedY;
+                this.opacity = Math.random();
+                this.fadeSpeed = Math.random() * 0.02;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.size > 0.2) this.size -= 0.02;
+                this.opacity += this.fadeSpeed;
+                if (this.opacity >= 1 || this.opacity <= 0.3) {
+                    this.fadeSpeed *= -1;
+                }
+            }
+
+            draw() {
+                ctx.fillStyle = rgba(255, 255, 255, ${this.opacity});
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            for (let i = 0; i < 80; i++) {
+                let size = Math.random() * 3 + 1;
+                let x = Math.random() * canvas.width;
+                let y = Math.random() * canvas.height;
+                let speedX = (Math.random() - 0.5) * 1.5;
+                let speedY = (Math.random() - 0.5) * 1.5;
+                particlesArray.push(new Particle(x, y, size, speedX, speedY));
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+
+        window.addEventListener("resize", function() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles();
+        });
+
+        initParticles();
+        animateParticles();
+
+        // Параллакс-эффект
+        document.addEventListener("mousemove", (e) => {
+            let moveX = (e.clientX / window.innerWidth - 0.5) * 20;
+            let moveY = (e.clientY / window.innerHeight - 0.5) * 20;
+            document.body.style.backgroundPosition = ${moveX}px ${moveY}px;
+        });
+    </script>
+
+</body>
+</html>
